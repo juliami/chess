@@ -1,4 +1,4 @@
-import Board from "@/components/chess-board";
+import Board from "@/components/board";
 import { ThemedView } from "@/components/themed-view";
 import { BoardProvider } from "@/context/boardContext";
 import { StyleSheet } from "react-native";

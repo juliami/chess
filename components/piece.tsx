@@ -9,6 +9,7 @@ interface ChessPieceProps {
 }
 const ChessPiece = ({ square }: ChessPieceProps) => {
   const { selectedPiece, setSelectedPiece } = useSelectedPiece();
+
   const { pieces } = usePieces();
   const piece = pieces[square];
 

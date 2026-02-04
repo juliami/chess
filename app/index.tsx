@@ -1,25 +1,26 @@
+import Board from '@/components/chess-board';
+import { ThemedView } from '@/components/themed-view';
+import { BoardProvider } from '@/context/boardContext';
 import { StyleSheet } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 
-export default function ModalScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">Chess!</ThemedText>
-    </ThemedView>
-  );
+export default function MainScreen() {
+    return (
+        <BoardProvider>
+            <ThemedView style={styles.container}>
+                <Board />
+            </ThemedView>
+        </BoardProvider>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 15,
+
+    },
+
 });

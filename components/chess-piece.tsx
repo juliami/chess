@@ -5,48 +5,53 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "./themed-text";
 
 interface ChessPieceProps {
-    square: string;
+  square: string;
 }
 const ChessPiece = ({ square }: ChessPieceProps) => {
-    const { selectedPiece, setSelectedPiece } = useSelectedPiece();
-    const { pieces } = usePieces();
-    const piece = pieces[square];
+  const { selectedPiece, setSelectedPiece } = useSelectedPiece();
+  const { pieces } = usePieces();
+  const piece = pieces[square];
 
-    if (!piece) return null;
+  if (!piece) return null;
 
-    const backgroundColor = isWhitePiece(piece) ? 'beige' : 'dimgray';
+  const backgroundColor = isWhitePiece(piece) ? "beige" : "dimgray";
 
-
-    return (
-        <Pressable onPressIn={() => {
-            setSelectedPiece(square);  
-        }} style={styles.pressable}>
-            <View style={[styles.piece, {
-                backgroundColor,
-                borderColor: selectedPiece === square ? 'deeppink' : 'transparent'
-            }]}>
-                <ThemedText>{piece}</ThemedText>
-            </View>
-        </Pressable>
-    )
-}
+  return (
+    <Pressable
+      onPressIn={() => {
+        setSelectedPiece(square);
+      }}
+      style={styles.pressable}
+    >
+      <View
+        style={[
+          styles.piece,
+          {
+            backgroundColor,
+            borderColor: selectedPiece === square ? "deeppink" : "transparent",
+          },
+        ]}
+      >
+        <ThemedText>{piece}</ThemedText>
+      </View>
+    </Pressable>
+  );
+};
 const styles = StyleSheet.create({
-    pressable: {
-        width: '100%',
-        height: '100%',
-    },
-    piece: {
-        width: 30,
-        height: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'center',
-        borderRadius: 999,
-        borderWidth: 4,
-        borderColor: 'transparent',
-    }
-
-})
+  pressable: {
+    width: "100%",
+    height: "100%",
+  },
+  piece: {
+    width: 30,
+    height: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    borderRadius: 999,
+    borderWidth: 4,
+    borderColor: "transparent",
+  },
+});
 
 export default ChessPiece;
-

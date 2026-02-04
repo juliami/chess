@@ -1,41 +1,31 @@
-import { usePieces } from "@/hooks/use-pieces";
-import { useSelectedPiece } from "@/hooks/use-selected-piece";
-import { isWhitePiece } from "@/utils";
-import { Pressable, StyleSheet, View } from "react-native";
+import { useChessboard } from "@/hooks/use-chess-game";
+import { isPieceOfColor } from "@/utils";
+import { StyleSheet, View } from "react-native";
 import { ThemedText } from "./themed-text";
 
-interface ChessPieceProps {
+interface PieceProps {
   square: string;
 }
-const ChessPiece = ({ square }: ChessPieceProps) => {
-  const { selectedPiece, setSelectedPiece } = useSelectedPiece();
-
-  const { pieces } = usePieces();
-  const piece = pieces[square];
+const Piece = ({ square }: PieceProps) => {
+  const {pieces}  = useChessboard();
+  const piece = pieces[square]
 
   if (!piece) return null;
 
-  const backgroundColor = isWhitePiece(piece) ? "beige" : "dimgray";
+  const backgroundColor = isPieceOfColor(piece, 'white') ? "beige" : "dimgray";
 
   return (
-    <Pressable
-      onPressIn={() => {
-        setSelectedPiece(square);
-      }}
-      style={styles.pressable}
-    >
+ 
       <View
         style={[
           styles.piece,
           {
             backgroundColor,
-            borderColor: selectedPiece === square ? "deeppink" : "transparent",
           },
         ]}
       >
         <ThemedText>{piece}</ThemedText>
       </View>
-    </Pressable>
   );
 };
 const styles = StyleSheet.create({
@@ -55,4 +45,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChessPiece;
+export default Piece;

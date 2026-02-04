@@ -1,31 +1,50 @@
-import { Game, PieceSymbol } from 'js-chess-engine';
+import { Game as ChessGame, PieceSymbol } from 'js-chess-engine';
 import { createContext, useEffect, useState } from "react";
          
-export const ChessGameContext = createContext({
-    selectedPiece: null as string | null,
-    setSelectedPiece: (piece: string | null) => {},
-    pieces: {} as Record<string, PieceSymbol>,
-    setPieces: (pieces: Record<string, PieceSymbol>) => {},
-    game: null as Game | null,
-    moves: [] as string[],
-});
+interface ChessGameContextType {
+    selectedSquare: string | null;
+    pieces: Record<string, PieceSymbol>;
+    moves: string[];
+    turn: 'white' | 'black';
+
+    selectSquare: (square: string | null) => void;
+    makeMove: (from: string, to: string) => void;
+}
+
+
+export const ChessGameContext = createContext<ChessGameContextType | undefined>(undefined);
 
 export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
-    const [selectedPiece, setSelectedPiece] = useState<string | null>(null);
-    const [game] = useState(() => new Game());  
+    const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
+    const [game] = useState(() => new ChessGame());  
     const [pieces, setPieces] = useState(() => game.exportJson().pieces);
-    const [moves, setMoves] = useState<string[]>([]);
+    const [turn, setTurn] = useState(() => game.exportJson().turn);
 
+    const [moves, setMoves] = useState<string[]>([]);
+    
     useEffect(() => {
-        if (selectedPiece) {
-            const moves = game.moves(selectedPiece)[selectedPiece];
+        if (selectedSquare) {
+            const moves = game.moves(selectedSquare)[selectedSquare];
             setMoves(moves);
         }
-    }, [selectedPiece]);
+    }, [selectedSquare]);
 
+
+    const selectSquare = (square: string | null) => {
+        setSelectedSquare(square);
+    };
+
+
+    const makeMove = (from: string, to: string) => {
+        game.move(from, to);
+        setPieces(game.exportJson().pieces);
+        setMoves([]);
+        setTurn(game.exportJson().turn);
+        setSelectedSquare(null);
+    };
 
     return (
-        <ChessGameContext.Provider value={{ selectedPiece, setSelectedPiece, pieces, setPieces, moves }}>
+        <ChessGameContext.Provider value={{ selectedSquare, pieces, moves, selectSquare, turn, makeMove }}>
             {children}
         </ChessGameContext.Provider>
     );

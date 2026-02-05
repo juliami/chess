@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     board: {
         flexDirection: "row",
         flexWrap: "wrap",
+        transform: [{ rotate: '-90deg' }],
     },
 });
 

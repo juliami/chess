@@ -1,6 +1,6 @@
 import { useChessboard } from "@/hooks/use-chess-game";
 import { isPieceOfColor, isWhiteSquare } from "@/utils";
-import { Pressable, StyleSheet, View } from "react-native";
+import { ImageBackground, Pressable, StyleSheet, View } from "react-native";
 
 interface SquareProps {
     square: string;
@@ -14,25 +14,27 @@ const Square = ({ square, children }: SquareProps) => {
     const isValidMove = moves.includes(square);
     const isSelected = selectedSquare === square;
     const hasMovablePiece = !!pieceOnSquare && isPieceOfColor(pieceOnSquare, turn);
-    
+
     const handlePress = () => {
-        if (hasMovablePiece){
+        if (hasMovablePiece) {
             selectSquare(square);
-        } 
-        if (isValidMove && selectedSquare){
+        }
+        if (isValidMove && selectedSquare) {
             makeMove(selectedSquare, square);
         }
     };
     return (
         <Pressable onPressIn={handlePress}>
-            <View style={[
-                styles.square, 
-                isWhiteSquare(square) && styles.white, 
-                isValidMove && styles.move, 
-                isSelected && styles.selected]}
-                >
-                    {children}
-            </View>
+
+            <ImageBackground
+                source={isWhiteSquare(square) ? require('@/assets/images/tile13.png') : require('@/assets/images/tile14.png')}
+                style={styles.square}
+            >
+                {isValidMove && <View style={[styles.indicator, styles.moveIndicator]} />}
+                {isSelected && <View style={[styles.indicator, styles.selectedIndicator]} />}
+
+                {children}
+            </ImageBackground>
         </Pressable>
     );
 };
@@ -41,21 +43,24 @@ const styles = StyleSheet.create({
     square: {
         width: 45,
         height: 45,
-        backgroundColor: "#514B40",
     },
-    white: {
-        backgroundColor: "#ece1cd",
-    },
-    selected: {
-        borderColor: "deeppink",
-        borderWidth: 6,
-        borderStyle: "solid",
+    indicator: {
+        width: 41,
+        height: 41,
+        position: "absolute",
+        top: 2,
+        left: 2,
+        borderRadius: 5,
     },
 
-    move: {
-        borderColor: "green",
-        borderWidth: 6,
-        borderStyle: "solid",
+    selectedIndicator: {
+        backgroundColor: "#BE5A1C",
+        opacity: 0.4,
+    },
+    moveIndicator: {
+
+        backgroundColor: "#548550",
+        opacity: 0.7,
     },
 });
 

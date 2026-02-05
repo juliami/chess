@@ -1,7 +1,7 @@
 import { useChessboard } from "@/hooks/use-chess-game";
-import { isPieceOfColor } from "@/utils";
+import { Image } from "expo-image";
 import { StyleSheet, View } from "react-native";
-import { ThemedText } from "./themed-text";
+import { PIECE_DESIGNS } from "./piece-design";
 
 interface PieceProps {
   square: string;
@@ -12,19 +12,16 @@ const Piece = ({ square }: PieceProps) => {
 
   if (!piece) return null;
 
-  const backgroundColor = isPieceOfColor(piece, 'white') ? "beige" : "dimgray";
 
   return (
  
       <View
         style={[
           styles.piece,
-          {
-            backgroundColor,
-          },
         ]}
       >
-        <ThemedText>{piece}</ThemedText>
+        {/* <ThemedText>{piece}</ThemedText>   */}
+       <Image source={PIECE_DESIGNS[piece]?.image} style={{width: 44, height: 44, }}/>
       </View>
   );
 };
@@ -34,14 +31,15 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   piece: {
-    width: 30,
-    height: 30,
+    width: 44,
+    height: 44,
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
     borderRadius: 999,
     borderWidth: 4,
     borderColor: "transparent",
+    transform: [{ rotate: '90deg' }],
   },
 });
 

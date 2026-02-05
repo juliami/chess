@@ -1,13 +1,19 @@
 import Board from "@/components/board";
 import { ThemedView } from "@/components/themed-view";
 import { BoardProvider } from "@/context/boardContext";
-import { StyleSheet } from "react-native";
+import { ImageBackground, StyleSheet } from "react-native";
 
 export default function MainScreen() {
   return (
     <BoardProvider>
       <ThemedView style={styles.container}>
+      <ImageBackground
+          source={require('@/assets/images/wood7.png')}
+          style={styles.background2}
+          resizeMode="repeat"
+        >
         <Board />
+        </ImageBackground>
       </ThemedView>
     </BoardProvider>
   );
@@ -18,6 +24,15 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 15,
+  },
+  background: {
+    width: "100%",
+    height: 390,
+  },
+  background2: {
+    width: "100%",
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

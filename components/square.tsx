@@ -1,67 +1,74 @@
 import { useChessboard } from "@/hooks/use-chess-game";
 import { isPieceOfColor, isWhiteSquare } from "@/utils";
+import { useMemo } from "react";
 import { ImageBackground, Pressable, StyleSheet, View } from "react-native";
 
+const whiteTileImage = require("@/assets/images/tile13.png");
+const blackTileImage = require("@/assets/images/tile14.png");
+
 interface SquareProps {
-    square: string;
-    children: React.ReactNode;
+  square: string;
+  children: React.ReactNode;
 }
 const Square = ({ square, children }: SquareProps) => {
-    const { selectedSquare } = useChessboard();
-    const { pieces, turn, makeMove, moves, selectSquare } = useChessboard();
-    const pieceOnSquare = pieces[square];
+  const { pieces, turn, makeMove, moves, selectSquare, selectedSquare } =
+    useChessboard();
 
-    const isValidMove = moves.includes(square);
-    const isSelected = selectedSquare === square;
-    const hasMovablePiece = !!pieceOnSquare && isPieceOfColor(pieceOnSquare, turn);
+  const pieceOnSquare = pieces[square];
+  const isSelected = selectedSquare === square;
 
-    const handlePress = () => {
-        if (hasMovablePiece) {
-            selectSquare(square);
-        }
-        if (isValidMove && selectedSquare) {
-            makeMove(selectedSquare, square);
-        }
-    };
-    return (
-        <Pressable onPressIn={handlePress}>
+  const isValidMove = useMemo(() => moves.includes(square), [moves, square]);
+  const hasMovablePiece = useMemo(
+    () => !!pieceOnSquare && isPieceOfColor(pieceOnSquare, turn),
+    [pieceOnSquare, turn],
+  );
+  const tileImage = isWhiteSquare(square) ? whiteTileImage : blackTileImage;
 
-            <ImageBackground
-                source={isWhiteSquare(square) ? require('@/assets/images/tile13.png') : require('@/assets/images/tile14.png')}
-                style={styles.square}
-            >
-                {isValidMove && <View style={[styles.indicator, styles.moveIndicator]} />}
-                {isSelected && <View style={[styles.indicator, styles.selectedIndicator]} />}
-
-                {children}
-            </ImageBackground>
-        </Pressable>
-    );
+  const handlePress = () => {
+    if (hasMovablePiece) {
+      selectSquare(square);
+    }
+    if (isValidMove && selectedSquare) {
+      makeMove(selectedSquare, square);
+    }
+  };
+  return (
+    <Pressable onPressIn={handlePress}>
+      <ImageBackground source={tileImage} style={styles.square}>
+        {isValidMove && (
+          <View style={[styles.indicator, styles.moveIndicator]} />
+        )}
+        {isSelected && (
+          <View style={[styles.indicator, styles.selectedIndicator]} />
+        )}
+        {children}
+      </ImageBackground>
+    </Pressable>
+  );
 };
 
 const styles = StyleSheet.create({
-    square: {
-        width: 45,
-        height: 45,
-    },
-    indicator: {
-        width: 41,
-        height: 41,
-        position: "absolute",
-        top: 2,
-        left: 2,
-        borderRadius: 5,
-    },
+  square: {
+    width: 45,
+    height: 45,
+  },
+  indicator: {
+    width: 41,
+    height: 41,
+    position: "absolute",
+    top: 2,
+    left: 2,
+    borderRadius: 5,
+  },
 
-    selectedIndicator: {
-        backgroundColor: "#BE5A1C",
-        opacity: 0.4,
-    },
-    moveIndicator: {
-
-        backgroundColor: "#548550",
-        opacity: 0.7,
-    },
+  selectedIndicator: {
+    backgroundColor: "#BE5A1C",
+    opacity: 0.4,
+  },
+  moveIndicator: {
+    backgroundColor: "#548550",
+    opacity: 0.7,
+  },
 });
 
 export default Square;

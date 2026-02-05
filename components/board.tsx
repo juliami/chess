@@ -3,22 +3,27 @@ import Square from "@/components/square";
 import { SQUARES, SQUARE_SIZE } from "@/constants/board";
 import { useChessboard } from "@/hooks/use-chess-game";
 import { StyleSheet, View } from "react-native"; // Import Game class and stateless functions
+import Animated, { useAnimatedRef } from "react-native-reanimated";
 
 const Board = () => {
   const { pieces } = useChessboard();
+  const animatedRef = useAnimatedRef();
+
+
+
   return (
     <View style={styles.board}>
       {SQUARES.map((square) => (
         <Square key={square} square={square} />
       ))}
-      <View style={[styles.board, styles.draggingLayer]}>
+      <Animated.View style={[styles.board, styles.draggingLayer]} ref={animatedRef} >
         {SQUARES.map((square) => {
           if (pieces[square]) {
-            return <ChessPiece square={square} key={square} />;
+            return <ChessPiece square={square} key={square} parentRef={animatedRef} />;
           }
           return <View key={square} style={styles.emptySquare} />;
         })}
-      </View>
+      </Animated.View >
     </View>
   );
 };

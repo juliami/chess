@@ -12,9 +12,13 @@ import { PIECE_DESIGNS } from "./piece-design";
 
 interface PieceProps {
   square: string;
+  parentRef: any
 }
 
-const Piece = ({ square }: PieceProps) => {
+// to do use measure
+const TOP_OFFSET_MAGIC = 97;
+
+const Piece = ({ square, parentRef }: PieceProps) => {
   const { pieces, selectSquare, turn } = useChessboard();
   const piece = pieces[square];
 
@@ -26,11 +30,10 @@ const Piece = ({ square }: PieceProps) => {
 
   const hasMovablePiece = useMemo(() => isPieceOfColor(piece, turn), [piece, turn]);
 
-  const snapToSquare = ({event, x,y }: {event: any, x: number, y: number}) => {
-    console.log(x, y);
-    console.log({event})
-    const square = getSquareByCoordinates(x, y);
-    console.log(square);
+
+const snapToSquare = ({coordX, coordY }: {event: any, coordX: number, coordY: number}) => {
+    const squareToSnapTo = getSquareByCoordinates(coordX, coordY - TOP_OFFSET_MAGIC);
+    console.log({squareToSnapTo});
   };
 
   const pan = Gesture.Pan()
@@ -47,6 +50,7 @@ const Piece = ({ square }: PieceProps) => {
       // Calculate offset from the starting position
       offsetX.value = event.absoluteX - startX.value;
       offsetY.value = event.absoluteY - startY.value;
+
       isDragging.value = true;
     })
     .onFinalize((event) => {
@@ -55,7 +59,7 @@ const Piece = ({ square }: PieceProps) => {
       const finalY = startY.value + event.translationY;
       
 
-      runOnJS(snapToSquare)({event, x: finalX, y: finalY});
+      runOnJS(snapToSquare)({coordX: finalX, coordY: finalY});
       offsetX.value = 0;
       offsetY.value = 0;
     });

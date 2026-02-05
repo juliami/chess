@@ -2,9 +2,11 @@ import Board from "@/components/board";
 import { BoardProvider } from "@/context/boardContext";
 import { ImageBackground, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MainScreen() {
   return (
+    <SafeAreaView style={styles.container}>
     <BoardProvider>
       <GestureHandlerRootView style={styles.container}>
         <ImageBackground
@@ -16,6 +18,7 @@ export default function MainScreen() {
         </ImageBackground>
       </GestureHandlerRootView>
     </BoardProvider>
+    </SafeAreaView>
   );
 }
 

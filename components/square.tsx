@@ -1,60 +1,49 @@
+import { MOVE_COLOR, SELECTED_COLOR, SQUARE_SIZE } from "@/constants/board";
 import { useChessboard } from "@/hooks/use-chess-game";
-import { isPieceOfColor, isWhiteSquare } from "@/utils";
+import { isWhiteSquare } from "@/utils";
 import { useMemo } from "react";
-import { ImageBackground, Pressable, StyleSheet, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, View } from "react-native";
 
 const whiteTileImage = require("@/assets/images/tile13.png");
 const blackTileImage = require("@/assets/images/tile14.png");
 
 interface SquareProps {
   square: string;
-  children: React.ReactNode;
 }
-const Square = ({ square, children }: SquareProps) => {
-  const { pieces, turn, makeMove, moves, selectSquare, selectedSquare } =
+const Square = ({ square }: SquareProps) => {
+  const { makeMove, moves, selectedSquare } =
     useChessboard();
 
-  const pieceOnSquare = pieces[square];
   const isSelected = selectedSquare === square;
 
   const isValidMove = useMemo(() => moves.includes(square), [moves, square]);
-  const hasMovablePiece = useMemo(
-    () => !!pieceOnSquare && isPieceOfColor(pieceOnSquare, turn),
-    [pieceOnSquare, turn],
-  );
+
   const tileImage = isWhiteSquare(square) ? whiteTileImage : blackTileImage;
 
   const handlePress = () => {
-    if (hasMovablePiece) {
-      selectSquare(square);
-    }
     if (isValidMove && selectedSquare) {
       makeMove(selectedSquare, square);
     }
   };
   return (
-    <Pressable onPressIn={handlePress}>
-      <ImageBackground source={tileImage} style={styles.square}>
-        {isValidMove && (
-          <View style={[styles.indicator, styles.moveIndicator]} />
-        )}
-        {isSelected && (
-          <View style={[styles.indicator, styles.selectedIndicator]} />
-        )}
-        {children}
-      </ImageBackground>
-    </Pressable>
+    <ImageBackground source={tileImage} style={styles.square}>
+      <Text>{square}</Text>
+      {isValidMove && <View style={[styles.indicator, styles.moveIndicator]} />}
+      {isSelected && (
+        <View style={[styles.indicator, styles.selectedIndicator]} />
+      )}
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   square: {
-    width: 45,
-    height: 45,
+    width: SQUARE_SIZE,
+    height: SQUARE_SIZE,
   },
   indicator: {
-    width: 41,
-    height: 41,
+    width: SQUARE_SIZE - 4,
+    height: SQUARE_SIZE - 4,
     position: "absolute",
     top: 2,
     left: 2,
@@ -62,11 +51,11 @@ const styles = StyleSheet.create({
   },
 
   selectedIndicator: {
-    backgroundColor: "#BE5A1C",
+    backgroundColor: SELECTED_COLOR,
     opacity: 0.4,
   },
   moveIndicator: {
-    backgroundColor: "#548550",
+    backgroundColor: MOVE_COLOR,
     opacity: 0.7,
   },
 });

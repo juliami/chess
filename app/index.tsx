@@ -1,12 +1,12 @@
 import Board from "@/components/board";
-import { ThemedView } from "@/components/themed-view";
 import { BoardProvider } from "@/context/boardContext";
 import { ImageBackground, StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function MainScreen() {
   return (
     <BoardProvider>
-      <ThemedView style={styles.container}>
+      <GestureHandlerRootView style={styles.container}>
         <ImageBackground
           source={require("@/assets/images/wood7.png")}
           style={styles.background}
@@ -14,7 +14,7 @@ export default function MainScreen() {
         >
           <Board />
         </ImageBackground>
-      </ThemedView>
+      </GestureHandlerRootView>
     </BoardProvider>
   );
 }
@@ -22,13 +22,11 @@ export default function MainScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+  
   },
   background: {
     width: "100%",
     height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
+
   },
 });

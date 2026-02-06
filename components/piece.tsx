@@ -6,11 +6,11 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   AnimatedRef,
   measure,
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { scheduleOnRN } from "react-native-worklets";
 import { PIECE_DESIGNS } from "./piece-design";
 
 interface PieceProps {
@@ -41,7 +41,7 @@ const Piece = ({ square, boardRef }: PieceProps) => {
   const pan = Gesture.Pan()
     .enabled(isMovable)
     .onBegin(() => {
-      runOnJS(selectSquare)(square);
+      scheduleOnRN(selectSquare, square);
     })
     .onUpdate((e) => {
       translateX.value = e.translationX;
@@ -55,7 +55,7 @@ const Piece = ({ square, boardRef }: PieceProps) => {
       if (layout) {
         const relativeX = e.absoluteX - layout.pageX;
         const relativeY = e.absoluteY - layout.pageY;
-        runOnJS(handleDrop)(relativeX, relativeY);
+        scheduleOnRN(handleDrop, relativeX, relativeY);
       }
 
       translateX.value = withSpring(0);

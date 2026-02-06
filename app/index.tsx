@@ -6,9 +6,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MainScreen() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1 }}>
     <BoardProvider>
-      <GestureHandlerRootView style={styles.container}>
+      <GestureHandlerRootView>
         <ImageBackground
           source={require("@/assets/images/wood7.png")}
           style={styles.background}
@@ -23,13 +23,12 @@ export default function MainScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  
-  },
+
   background: {
     width: "100%",
     height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
 
   },
 });

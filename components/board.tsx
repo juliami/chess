@@ -4,6 +4,7 @@ import { SQUARES, SQUARE_SIZE } from "@/constants/board";
 import { useChessboard } from "@/hooks/use-chess-game";
 import { memo } from "react";
 import { StyleSheet, View } from "react-native";
+import Animated, { useAnimatedRef } from "react-native-reanimated";
 
 
 const BoardBackground = memo(() => (
@@ -16,14 +17,14 @@ const BoardBackground = memo(() => (
 
 const Board = () => {
   const { pieces } = useChessboard();
-
+  const boardRef = useAnimatedRef<Animated.View>();
   return (
     <View style={styles.container}>
       <BoardBackground />
-      <View style={[styles.layer, { zIndex: 10 }]}>
+      <View style={[styles.layer, { zIndex: 10 }]} ref={boardRef}>
         {SQUARES.map((square) =>
           pieces[square] ? (
-            <ChessPiece square={square} key={square} />
+            <ChessPiece square={square} key={square} boardRef={boardRef} />
           ) : (
             <View key={square} style={styles.emptySquare} pointerEvents="none" />
           )

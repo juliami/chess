@@ -28,7 +28,7 @@ export const getSquareByCoordinates = (
     return null;
   }
 
-  const rowLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+  const rowLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
   
   return `${rowLetters[row]}${column + 1}`;
 

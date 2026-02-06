@@ -1,76 +1,79 @@
 import { useChessboard } from "@/hooks/use-chess-game";
 import { getSquareByCoordinates, isPieceOfColor } from "@/utils";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Image, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
-  useSharedValue
+  useSharedValue,
+  withSpring,
 } from "react-native-reanimated";
+
 import { PIECE_DESIGNS } from "./piece-design";
+
+
+// TODO: Replace with dynamic measurement
+const TOP_OFFSET_MAGIC = 97;
 
 interface PieceProps {
   square: string;
-  parentRef: any
 }
 
-// to do use measure
-const TOP_OFFSET_MAGIC = 97;
-
-const Piece = ({ square, parentRef }: PieceProps) => {
-  const { pieces, selectSquare, turn } = useChessboard();
+const Piece = ({ square }: PieceProps) => {
+  const { pieces, selectSquare, turn, makeMove, moves } = useChessboard();
   const piece = pieces[square];
 
-  const offsetX = useSharedValue<number>(0);
-  const offsetY = useSharedValue<number>(0);
-  const startX = useSharedValue<number>(0);
-  const startY = useSharedValue<number>(0);
-  const isDragging = useSharedValue<boolean>(false);
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const startX = useSharedValue(0);
+  const startY = useSharedValue(0);
+  const isDragging = useSharedValue(false);
 
-  const hasMovablePiece = useMemo(() => isPieceOfColor(piece, turn), [piece, turn]);
+  const isMovable = useMemo(() => isPieceOfColor(piece, turn), [piece, turn]);
+ 
+  const handleDrop = useCallback((absoluteX: number, absoluteY: number) => {
+    const targetSquare = getSquareByCoordinates(absoluteX, absoluteY - TOP_OFFSET_MAGIC);
 
-
-const snapToSquare = ({coordX, coordY }: {event: any, coordX: number, coordY: number}) => {
-    const squareToSnapTo = getSquareByCoordinates(coordX, coordY - TOP_OFFSET_MAGIC);
-    console.log({squareToSnapTo});
-  };
+    if (targetSquare && moves.includes(targetSquare) && targetSquare !== square) {
+      if (pieces[targetSquare]) {
+        console.log('Captured piece');
+      }
+      makeMove(square, targetSquare);
+    }
+  }, [moves, square, makeMove]);
 
   const pan = Gesture.Pan()
+    .enabled(!!isMovable) 
     .onBegin((event) => {
       runOnJS(selectSquare)(square);
-      // Store the initial position
       startX.value = event.absoluteX;
       startY.value = event.absoluteY;
     })
-    .onStart(() => {
-      isDragging.value = true;
-    })
-    .onChange((event) => {
-      // Calculate offset from the starting position
-      offsetX.value = event.absoluteX - startX.value;
-      offsetY.value = event.absoluteY - startY.value;
-
+    .onUpdate((event) => {
+      translateX.value = event.translationX;
+      translateY.value = event.translationY;
       isDragging.value = true;
     })
     .onFinalize((event) => {
       isDragging.value = false;
+      
       const finalX = startX.value + event.translationX;
       const finalY = startY.value + event.translationY;
-      
+    
+      runOnJS(handleDrop)(finalX, finalY);
 
-      runOnJS(snapToSquare)({coordX: finalX, coordY: finalY});
-      offsetX.value = 0;
-      offsetY.value = 0;
+      translateX.value = withSpring(0);
+      translateY.value = withSpring(0);
     });
 
   const animatedStyles = useAnimatedStyle(() => ({
-    transform: [{ translateX: offsetX.value }, { translateY: offsetY.value }],
+    transform: [{ translateX: translateX.value }, { translateY: translateY.value }],
+    zIndex: isDragging.value ? 1000 : 0,
+    
   }));
 
   if (!piece) return null;
-
- 
 
   return (
     <GestureDetector gesture={pan}>
@@ -87,9 +90,8 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: "center",
     alignItems: "center",
-    alignSelf: "center",
+    alignSelf: "center", 
     borderRadius: 22,
-    zIndex: 1000,
   },
   pieceImage: {
     width: 44,

@@ -2,43 +2,46 @@ import ChessPiece from "@/components/piece";
 import Square from "@/components/square";
 import { SQUARES, SQUARE_SIZE } from "@/constants/board";
 import { useChessboard } from "@/hooks/use-chess-game";
-import { StyleSheet, View } from "react-native"; // Import Game class and stateless functions
-import Animated, { useAnimatedRef } from "react-native-reanimated";
+import { memo } from "react";
+import { StyleSheet, View } from "react-native";
+
+
+const BoardBackground = memo(() => (
+  <View style={styles.layer}>
+    {SQUARES.map((square) => (
+      <Square key={square} square={square} />
+    ))}
+  </View>
+));
 
 const Board = () => {
   const { pieces } = useChessboard();
-  const animatedRef = useAnimatedRef();
-
-
 
   return (
-    <View style={styles.board}>
-      {SQUARES.map((square) => (
-        <Square key={square} square={square} />
-      ))}
-      <Animated.View style={[styles.board, styles.draggingLayer]} ref={animatedRef} >
-        {SQUARES.map((square) => {
-          if (pieces[square]) {
-            return <ChessPiece square={square} key={square} parentRef={animatedRef} />;
-          }
-          return <View key={square} style={styles.emptySquare} />;
-        })}
-      </Animated.View >
+    <View style={styles.container}>
+      <BoardBackground />
+      <View style={[styles.layer, { zIndex: 10 }]}>
+        {SQUARES.map((square) =>
+          pieces[square] ? (
+            <ChessPiece square={square} key={square} />
+          ) : (
+            <View key={square} style={styles.emptySquare} pointerEvents="none" />
+          )
+        )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  board: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+  container: {
     width: SQUARE_SIZE * 8,
     height: SQUARE_SIZE * 8,
   },
-  draggingLayer: {
-    zIndex: 1000,
-    elevation: 1000,
+  layer: {
     ...StyleSheet.absoluteFillObject,
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   emptySquare: {
     width: SQUARE_SIZE,

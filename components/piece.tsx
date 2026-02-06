@@ -35,7 +35,7 @@ const Piece = ({ square, boardRef }: PieceProps) => {
         makeMove(square, target);
       }
     },
-    [moves, square, makeMove]
+    [moves, square, makeMove],
   );
 
   const pan = Gesture.Pan()
@@ -63,7 +63,10 @@ const Piece = ({ square, boardRef }: PieceProps) => {
     });
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }, { translateY: translateY.value }],
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+    ],
     zIndex: isDragging.value ? 100 : 0,
   }));
 

@@ -23,10 +23,7 @@ const Square = ({ square }: SquareProps) => {
     <ImageBackground source={tileImage} style={styles.square}>
       {(isValidMove || isSelected) && (
         <View
-          style={[
-            styles.indicator,
-            isSelected ? styles.selected : styles.move,
-          ]}
+          style={[styles.indicator, isSelected ? styles.selected : styles.move]}
         />
       )}
     </ImageBackground>

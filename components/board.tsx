@@ -6,7 +6,6 @@ import { memo } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { useAnimatedRef } from "react-native-reanimated";
 
-
 const BoardBackground = memo(() => (
   <View style={styles.layer}>
     {SQUARES.map((square) => (
@@ -14,6 +13,7 @@ const BoardBackground = memo(() => (
     ))}
   </View>
 ));
+BoardBackground.displayName = "BoardBackground";
 
 const Board = () => {
   const { pieces } = useChessboard();
@@ -26,8 +26,12 @@ const Board = () => {
           pieces[square] ? (
             <ChessPiece square={square} key={square} boardRef={boardRef} />
           ) : (
-            <View key={square} style={styles.emptySquare} pointerEvents="none" />
-          )
+            <View
+              key={square}
+              style={styles.emptySquare}
+              pointerEvents="none"
+            />
+          ),
         )}
       </View>
     </View>

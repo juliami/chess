@@ -1,25 +1,32 @@
-import { StyleSheet } from "react-native";
+import Board from "@/components/board";
+import { BoardProvider } from "@/context/boardContext";
+import { ImageBackground, StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-
-export default function ModalScreen() {
+export default function MainScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">Chess!</ThemedText>
-    </ThemedView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <BoardProvider>
+        <GestureHandlerRootView>
+          <ImageBackground
+            source={require("@/assets/images/wood7.png")}
+            style={styles.background}
+            resizeMode="repeat"
+          >
+            <Board />
+          </ImageBackground>
+        </GestureHandlerRootView>
+      </BoardProvider>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  background: {
+    width: "100%",
+    height: "100%",
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
-  },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
   },
 });
